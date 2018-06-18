@@ -1,52 +1,54 @@
-window.initChart = (participants, points) => {
+window.initChart = (matches, gamePoints) => {
   const ctx = document.getElementById('chart');
-  const datasets = points.reduce((acc, person) => {
-    Object.entries(person).forEach(([key, value], index) => {
-      let obj = acc.find(o => o.label === key);
-      if (obj) {
-        obj.data.push(value);
-      } else {
-        obj = {label: key, backgroundColor: rainbow(participants.length, index)};
-        obj.data = [];
-        obj.data.push(value);
-        acc.push(obj);
-      }
-    });
-    return acc;
-  }, []);
+  const chartColors = ['#00AAFF', '#FF0000', '#FFFF00', '#008000', '#00FFFF', '#FF00FF'];
+  const datasets = gamePoints.map((person, index) => ({
+      label: person.name,
+      fill: false,
+      backgroundColor: chartColors[index],
+      borderColor: chartColors[index],
+      data: person.points
+    }));
   
-  const myChart = new Chart(ctx, {
-    type: 'bar',
+  new Chart(ctx, {
+    type: 'line',
     data: {
-      labels: [...participants],
+      labels: [...matches],
       datasets: datasets 
     },
     options: {
+      responsive: true,
+      title: {
+        display: true,
+        text: 'Nerdclub MM-Jalkapallo 2018 Kisatietäjä'
+      },
+      tooltips: {
+        mode: 'index',
+      },
+      hover: {
+        mode: 'index'
+      },
+      elements: {
+        line: {
+          tension: 0, // disables bezier curves
+        }
+      },
       scales: {
-        xAxes: [{ stacked: true }],
-        yAxes: [{ stacked: true }]
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Ottelu'
+          }
+        }],
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Pisteet'
+          }
+        }]
       }
     }
   });
-}
-
-function rainbow(numOfSteps, step) {
-    // This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distinguishable vibrant markers in Google Maps and other apps.
-    // Adam Cole, 2011-Sept-14
-    // HSV to RBG adapted from: http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
-    var r, g, b;
-    var h = step / numOfSteps;
-    var i = ~~(h * 6);
-    var f = h * 6 - i;
-    var q = 1 - f;
-    switch(i % 6){
-        case 0: r = 1; g = f; b = 0; break;
-        case 1: r = q; g = 1; b = 0; break;
-        case 2: r = 0; g = 1; b = f; break;
-        case 3: r = 0; g = q; b = 1; break;
-        case 4: r = f; g = 0; b = 1; break;
-        case 5: r = 1; g = 0; b = q; break;
-    }
-    var c = "#" + ("00" + (~ ~(r * 255)).toString(16)).slice(-2) + ("00" + (~ ~(g * 255)).toString(16)).slice(-2) + ("00" + (~ ~(b * 255)).toString(16)).slice(-2);
-    return (c);
 }

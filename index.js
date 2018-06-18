@@ -8,26 +8,44 @@ const urls = {
 const table = document.getElementById('results');
 
 function fetchMatches() {
-  return fetch(urls.matches)
+   return fetch(urls.matches)
     .then(res => res.json())
-    .then(data => {
-      Promise.all(participants.map(nickname => fetchPoints(nickname)))
-        .then(points => window.initChart(participants, points))
-    })
+    .then(data => parseMatches(data))
     .catch(e => console.error(e));
+}
+
+function parseMatches(matches) {
+  return matches.map(group => group.matches.map(match => ({[match.id]: match.name})))
+    .reduce((acc, val) => acc.concat(val), []);
 }
 
 function fetchPoints(nickname) {
   return fetch(urls.matchResults + nickname)
     .then(res => res.json())
     .then(data => {
-      return data.matchresults
-        .reduce((obj, item) => {
-          obj[item[0]] = item[1];
-          return obj;
-        }, {});
+      return {
+        name: data.nickname,
+        points: parsePoints(data.matchresults)
+      }
     })
     .catch(e => fetchPoints(nickname)); //retry
+}
+
+function parsePoints(matchresults) {
+  return getCumulativePoints(matchresults.map(item => item[1]));
+  /*
+  matchresults.reduce((obj, item) => {
+          obj[item[0]] = item[1];
+          return obj;
+        }, []);
+        */
+}
+
+function getCumulativePoints(points) {
+  return points.reduce((r, a) => {
+    r.push((r.length && r[r.length - 1] || 0) + a);
+    return r;
+  }, []);
 }
 
 function fetchDetails(nickname) {
@@ -51,4 +69,6 @@ function addTableRow(nickname, points) {
 
 Promise.all(participants.map(nickname => fetchDetails(nickname)))
   .then(list => list.forEach(obj => addTableRow(obj.nickname, obj.points)));
-fetchMatches();
+
+Promise.all([fetchMatches(), Promise.all(participants.map(nickname => fetchPoints(nickname)))])
+  .then(([matches, points]) => window.initChart(matches, points));
