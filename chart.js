@@ -8,7 +8,6 @@ window.initChart = (matches, gamePoints) => {
       borderColor: chartColors[index],
       data: person.points
     }));
-  
   new Chart(ctx, {
     type: 'line',
     data: {

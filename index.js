@@ -15,8 +15,11 @@ function fetchMatches() {
 }
 
 function parseMatches(matches) {
-  return matches.map(group => group.matches.map(match => ({[match.id]: match.name})))
-    .reduce((acc, val) => acc.concat(val), []);
+  return matches.reduce((acc, group) => {
+    const groupMatches = group.matches.filter(match => match.status === 'finished')
+      .map(match => match.name)
+    return acc.concat(groupMatches);
+  }, []);
 }
 
 function fetchPoints(nickname) {
@@ -33,12 +36,6 @@ function fetchPoints(nickname) {
 
 function parsePoints(matchresults) {
   return getCumulativePoints(matchresults.map(item => item[1]));
-  /*
-  matchresults.reduce((obj, item) => {
-          obj[item[0]] = item[1];
-          return obj;
-        }, []);
-        */
 }
 
 function getCumulativePoints(points) {
