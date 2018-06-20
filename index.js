@@ -16,10 +16,10 @@ function fetchMatches() {
 
 function parseMatches(matches) {
   return matches.reduce((acc, group) => {
-    const groupMatches = group.matches.filter(match => match.status === 'finished')
-      .map(match => match.name)
+    const groupMatches = group.matches.filter(match => match.status === 'finished');
     return acc.concat(groupMatches);
-  }, []);
+  }, []).sort((a, b) => new Date(a.date) - new Date(b.date))
+        .map(match => match.name);
 }
 
 function fetchPoints(nickname) {
