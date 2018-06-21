@@ -9,16 +9,28 @@
 </head>
 
 <body>
-  <table>
-    <thead>
-      <tr>
-        <th>Osallistuja</th>
-        <th>Pisteet</th>
-      </tr>
-    </thead>
-    <tbody id="results">
-    </tbody>
-  </table>
+  <div id="container">
+    <table class="item">
+      <thead>
+        <tr>
+          <th>Osallistuja</th>
+          <th>Pisteet</th>
+        </tr>
+      </thead>
+      <tbody id="results">
+      </tbody>
+    </table>
+
+    <div id="next-match-container" class="item">
+      <h3>Seuraava ottelu</h3>
+      <p id="next-match"></p>
+      <p id="guess-header">Veikkaukset</p>
+      <table>
+        <tbody id="guesses">
+        </tbody>
+      </table>
+    </div>
+  </div>
   <canvas id="chart" style="height: 370px; width: 100%;"></canvas>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
   <script src="chart.js"></script>
