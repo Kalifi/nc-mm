@@ -1,6 +1,6 @@
 window.initChart = (matches, gamePoints) => {
   const ctx = document.getElementById('chart');
-  const chartColors = ['#00AAFF', '#FF0000', '#FFFF00', '#008000', '#00FFFF', '#FF00FF'];
+  const chartColors = ['#00AAFF', '#FF0000', '#000000', '#008000', '#00FFFF', '#FF00FF'];
   const datasets = gamePoints.map((person, index) => ({
       label: person.name,
       fill: false,
